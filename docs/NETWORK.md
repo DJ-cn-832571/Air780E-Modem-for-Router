@@ -1,5 +1,6 @@
 # 网络优先级与恢复
 
+**简体中文** | [English](NETWORK.en.md)
 Air780E 接口名为 `air780e`，插件启动设置默认路由 metric 5、DNS metric 5，加入名为 wan 的既有防火墙区域。网线 WAN 常见 metric 10。低 metric 优先，同一优先级不保证固定顺序。
 
 先备份 `/etc/config/network`、`firewall`、`kmwan`、`tailscale`、`glipv6`。不要把这些备份发布到 GitHub。
@@ -37,3 +38,9 @@ Tailscale exit node、OpenVPN、WireGuard 和其他策略可能优先于 main �
 检查：`ip route`、`ip rule`、`ubus call network.interface.air780e status`，再做「验证 4G 出口」。停止模块后应使用 WAN；重新启动恢复 Air780E。模块与 LAN 的子网不可冲突（模块通常使用 192.168.10.0/24）。
 
 恢复：停止 Air780E，恢复此前备份的配置，重新加载网络与防火墙及 GL kmwan。卸载程序保留用户数据与网络配置；恢复出口策略须单独完成，避免误改其他服务。
+
+## Tailscale 公共出口与 WAN IPv6
+
+可显式配置 Tailscale 公共出口，让公网 IPv4、IPv6 经该节点上网，底层连接仍以 Air780E 为第一、WAN 为第二。需把出口节点同步到 GL 原生 Tailscale 配置，允许本地 LAN 访问，并配置 LAN 到隧道的转发与 NAT。不要发布设备地址及账号状态。
+
+WAN IPv6 隧道可能绕过 Air780E 的 IPv4 优先级。开发路由器通过专用 hotplug 策略处理：Air780E metric 5 默认路由存在时，只对带 Tailscale 标记的外层 IPv6 隧道流量设为不可达，促使其回退 IPv4 并走 Air780E；内层 IPv6 仍可经公共出口访问。停止 4G 后移除该策略，允许 WAN IPv4/IPv6 承载隧道。这是设备专用配置，插件安装不会自动添加。4G 运营商 NAT 可能需要 DERP 中继；WAN IPv6 可实现节点直连。切换底层接口时，现有连接可能短暂中断。

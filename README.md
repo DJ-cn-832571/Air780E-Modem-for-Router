@@ -1,10 +1,11 @@
 # Air780E Modem for Router V1.3
 
+**简体中文** | [English](README.en.md)
 USB 蜂窝上网、短信管理与邮件转发的 GL.iNet / OpenWrt LuCI 插件。
 
 **采用 MIT 协议，完整项目源码开放。可免费使用、复制、修改、再分发及商业使用，须保留版权和许可证声明。** 查看 [LICENSE](LICENSE)。本项目没有订阅、授权码或遥测；第三方依赖与模块核心固件的许可独立于本项目，见 [第三方说明](THIRD_PARTY.md)。
 
-产品名称 **V1.3**，OpenWrt 软件包版本 **1.3.1**，软件包名 `luci-app-air780e`。
+产品名称 **V1.3**，OpenWrt 软件包版本 **1.3.3**，软件包名 `luci-app-air780e`。
 
 ## 已支持的设备
 
@@ -37,6 +38,8 @@ sh /tmp/install-air780e.sh
 
 ## 功能
 
+- 简体中文、English、繁體中文三种界面语言；首次默认简体中文，可记住浏览器内的选择，不翻译短信正文或改动输入。
+
 - USB ECM 启停、热插拔重连、DHCP 等待与独立 4G DNS/HTTPS 验证。
 - 蜂窝信号、RSRP、短信就绪和 SIM 提供的本机号码。
 - 中文短信发送、收件箱、已发送记录、回复、失败记录填入重发。
@@ -63,7 +66,7 @@ VPN 默认出口、策略路由、IPv6 和 GL kmwan 可能覆盖普通默认路�
 
 ## 验收、源码与反馈
 
-已验证实际核心及脚本烧录、USB 重连、三轮启停、WAN 回退、绑定 4G HTTPS 和真实 LAN 客户端 HTTP 200。29 项回归测试通过。其他型号、完整断电重启和长时间压力测试仍需验证。
+已验证实际核心及脚本烧录、USB 重连、三轮启停、WAN 回退、绑定 4G HTTPS 和真实 LAN 客户端 HTTP 200。33 项回归测试通过。其他型号、完整断电重启和长时间压力测试仍需验证。
 
 ```sh
 PYTHONPATH=files/usr/lib/air780e python3 -m unittest discover -s tests -v
@@ -72,4 +75,4 @@ python3 scripts/build.py
 
 发布流程与软件源签名见 [发布说明](docs/RELEASING.md)。版本变化见 [CHANGELOG](CHANGELOG.md)。反馈请提交 [Issue](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/issues)，包含路由器型号、固件版本、模块型号及脱敏诊断；不要上传号码、短信、密码、数据库或签名私钥。
 
-独立社区项目，非 GL.iNet 或合宙官方产品。点击网络 · [www.DJ.cn](https://www.DJ.cn) · 蔡立文 · cailiwen@dj.cn。
+独立社区项目，非 GL.iNet 或合宙官方产品。点击网络 · **股票代码：832571** · [www.DJ.cn](https://www.DJ.cn) · 蔡立文 · cailiwen@dj.cn。

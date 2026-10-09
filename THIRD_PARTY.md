@@ -1,5 +1,6 @@
 # 第三方组件
 
+**简体中文** | [English](THIRD_PARTY.en.md)
 本项目自有源码采用 MIT（根目录 LICENSE）。依赖保持各自许可证；本项目不宣称拥有其著作权。
 
 - `sys.lua`、`sysplus.lua`：来自 [openLuat/LuatOS](https://github.com/openLuat/LuatOS) Lua 调度库，保留文件作者注释。上游采用 MIT，附录许可证见 `LICENSES/LuatOS-MIT.txt`。
@@ -9,3 +10,5 @@
 - OpenWrt、LuCI、Python、curl、SQLite、OpenSSL、zstd：由用户固件软件源安装，分别遵循上游许可。
 
 发行 IPK 只包含本项目 Python/Lua/网页/启动脚本和许可证。完整项目源码在同一仓库公开，包含构建脚本、测试及配套模块脚本。源码包不含 SIM 信息、短信、邮箱密码、路由器配置、签名私钥或下载的核心固件/运行库。
+
+繁体中文词典在开发时使用 OpenCC 转换并检查界面术语；OpenCC 不是路由器运行时依赖，IPK 不包含 OpenCC 代码。
