@@ -25,7 +25,7 @@ USB 蜂窝上网、短信管理与邮件转发的 GL.iNet / OpenWrt LuCI 插件�
 推荐先下载并阅读脚本，再执行：
 
 ```sh
-curl -fL https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
+curl -4 --retry 3 -fL https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
 sh /tmp/install-air780e.sh
 ```
 
