@@ -26,10 +26,17 @@ printf '\nsrc/gz air780e_router %s\n' "$base" >> "$work/customfeeds.conf"
 cp "$work/customfeeds.conf" "$feed"
 lists=$(awk '$1=="lists_dir" {print $3; exit}' /etc/opkg.conf)
 lists=${lists:-/var/opkg-lists}
+check_index() {
+ [ -f "$lists/air780e_router" ] || return 1
+ if gzip -t "$lists/air780e_router" 2>/dev/null; then
+  gzip -dc "$lists/air780e_router" > "$work/index-installed"
+ else cp "$lists/air780e_router" "$work/index-installed"; fi
+ cmp -s "$work/Packages" "$work/index-installed"
+}
 ready=0
 for attempt in 1 2 3; do
  if ! opkg update; then echo '部分软件源更新失败，正在检查本项目源'; fi
- if [ -f "$lists/air780e_router" ] && cmp -s "$work/Packages" "$lists/air780e_router"; then ready=1; break; fi
+ if check_index; then ready=1; break; fi
  echo "本项目索引未就绪，重试 $attempt / 3"
 done
 [ "$ready" = 1 ] || { echo '本项目签名索引未成功更新，停止安装'; exit 1; }
