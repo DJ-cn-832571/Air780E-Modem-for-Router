@@ -23,7 +23,7 @@ import signal_level
 import sms_store
 from serial_transport import ATSerial
 
-VERSION = '1.3.1'
+VERSION = '1.3.2'
 APP = 'AIR780E_DEMO'
 STORE = Path(os.environ.get('AIR780E_DATA_DIR', '/etc/air780e'))
 RUNTIME = Path(os.environ.get('AIR780E_RUN_DIR', '/var/run/air780e'))
@@ -290,7 +290,7 @@ class Service:
             ids = value.get('ids')
             if not isinstance(ids,list) or not 1 <= len(ids) <= 500 or any(not isinstance(x,str) for x in ids):
                 raise ValueError('请选择有效短信')
-            sms_store.archive(STORE,ids,action=='restore_sms')
+            sms_store.archive(STORE,ids,action=='restore_sms',value.get('kind','inbox'))
             return {'changed':len(ids)}
         if action == 'clear_trash':
             if value.get('confirmation') != '永久清空已删除短信':

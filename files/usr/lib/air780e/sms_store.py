@@ -14,6 +14,8 @@ def _connect(store):
     if 'deleted' not in [r[1] for r in db.execute('PRAGMA table_info(inbox)')]:
         db.execute('ALTER TABLE inbox ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0')
     db.execute('CREATE TABLE IF NOT EXISTS outbox (id TEXT PRIMARY KEY, number TEXT, message TEXT, received TEXT, state TEXT, error TEXT)')
+    if 'deleted' not in [r[1] for r in db.execute('PRAGMA table_info(outbox)')]:
+        db.execute('ALTER TABLE outbox ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0')
     db.execute('CREATE TABLE IF NOT EXISTS purged_sms (id TEXT PRIMARY KEY)')
     db.execute('CREATE TABLE IF NOT EXISTS sms_sequence (singleton INTEGER PRIMARY KEY CHECK(singleton=1), last_rowid INTEGER NOT NULL)')
     db.execute('INSERT OR IGNORE INTO sms_sequence VALUES (1,0)')
@@ -49,21 +51,30 @@ def save(store,frame):
 
 def rows(store,kind='inbox'):
     with connect(store) as db:
-        if kind=='sent': result=db.execute('SELECT * FROM outbox ORDER BY rowid DESC LIMIT 500').fetchall()
-        else: result=db.execute('SELECT * FROM inbox WHERE deleted=? ORDER BY rowid DESC LIMIT 500',(1 if kind=='trash' else 0,)).fetchall()
+        if kind=='sent':
+            result=db.execute("SELECT *, 'sent' AS source FROM outbox WHERE deleted=0 ORDER BY rowid DESC LIMIT 500").fetchall()
+        elif kind=='trash':
+            result=db.execute("SELECT id,number,message,received,NULL AS state,NULL AS error,'inbox' AS source FROM inbox WHERE deleted=1 UNION ALL SELECT id,number,message,received,state,error,'sent' AS source FROM outbox WHERE deleted=1 ORDER BY received DESC LIMIT 500").fetchall()
+        else:
+            result=db.execute("SELECT *, 'inbox' AS source FROM inbox WHERE deleted=0 ORDER BY rowid DESC LIMIT 500").fetchall()
     return [dict(row) for row in result]
 
-def archive(store,ids,restore=False):
+def archive(store,ids,restore=False,kind='inbox'):
     if not ids: raise ValueError('请先选择短信。')
+    if kind not in ('inbox','sent'): raise ValueError('短信列表无效')
+    table='outbox' if kind=='sent' else 'inbox'
     with connect(store) as db:
-        for message_id in ids: db.execute('UPDATE inbox SET deleted=? WHERE id=?',(0 if restore else 1,message_id))
+        for message_id in ids:
+            db.execute('UPDATE '+table+' SET deleted=? WHERE id=?',(0 if restore else 1,message_id))
 
 def clear_trash(store):
     with connect(store) as db:
         count=db.execute('SELECT COUNT(*) FROM inbox WHERE deleted=1').fetchone()[0]
-        # Keep only opaque IDs so device RAM replay cannot resurrect cleared text.
+        count+=db.execute('SELECT COUNT(*) FROM outbox WHERE deleted=1').fetchone()[0]
+        # Keep opaque incoming IDs so device RAM replay cannot resurrect cleared text.
         db.execute('INSERT OR IGNORE INTO purged_sms SELECT id FROM inbox WHERE deleted=1')
         db.execute('DELETE FROM inbox WHERE deleted=1')
+        db.execute('DELETE FROM outbox WHERE deleted=1')
     return count
 
 def clear_all(store):
@@ -83,7 +94,7 @@ def clear_all(store):
 
 def sending(store,ident,number,message):
     with connect(store) as db:
-        db.execute('INSERT INTO outbox VALUES (?,?,?,?,?,?)',(ident,number,message,datetime.now().isoformat(timespec='seconds'),'sending',''))
+        db.execute('INSERT INTO outbox (id,number,message,received,state,error) VALUES (?,?,?,?,?,?)',(ident,number,message,datetime.now().isoformat(timespec='seconds'),'sending',''))
 
 def outcome(store,ident,state,error=''):
     with connect(store) as db: db.execute('UPDATE outbox SET state=?,error=? WHERE id=?',(state,error,ident))

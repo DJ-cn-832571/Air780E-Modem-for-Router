@@ -32,3 +32,35 @@ class TrashTests(unittest.TestCase):
             with sms_store.connect(store) as db: previous=db.execute('SELECT MAX(rowid) FROM inbox').fetchone()[0]
             sms_store.archive(store,['first']);sms_store.clear_trash(store);incoming('second')
             with sms_store.connect(store) as db: self.assertGreater(db.execute('SELECT MAX(rowid) FROM inbox').fetchone()[0],previous)
+    def test_sent_delete_restore_preserves_send_outcome_and_inbox_same_id(self):
+        with tempfile.TemporaryDirectory() as directory:
+            store=Path(directory)
+            sms_store.save(store,dict(event='sms_received',sms_id='same',number='10010',message='incoming',received='now'))
+            for ident in ['same','other','keep']:
+                sms_store.sending(store,ident,'10010','outgoing')
+                sms_store.outcome(store,ident,'accepted')
+            sms_store.archive(store,['same','other'],kind='sent')
+            self.assertEqual([r['id'] for r in sms_store.rows(store,'sent')],['keep'])
+            self.assertEqual(len(sms_store.rows(store)),1)
+            trash=sms_store.rows(store,'trash')
+            self.assertEqual({r['source'] for r in trash},{'sent'})
+            self.assertEqual({r['state'] for r in trash},{'accepted'})
+            sms_store.outcome(store,'same','unknown')
+            self.assertEqual(len(sms_store.rows(store,'sent')),1)
+            sms_store.archive(store,['same'],restore=True,kind='sent')
+            self.assertEqual(next(r for r in sms_store.rows(store,'sent') if r['id']=='same')['state'],'unknown')
+            self.assertEqual(sms_store.clear_trash(store),1)
+            self.assertEqual(len(sms_store.rows(store,'sent')),2)
+            self.assertEqual(len(sms_store.rows(store)),1)
+    def test_existing_outbox_migrates_without_losing_history(self):
+        import sqlite3
+        with tempfile.TemporaryDirectory() as directory:
+            store=Path(directory)
+            with sqlite3.connect(store/'inbox.sqlite3') as db:
+                db.execute('CREATE TABLE outbox (id TEXT PRIMARY KEY,number TEXT,message TEXT,received TEXT,state TEXT,error TEXT)')
+                db.execute("INSERT INTO outbox VALUES ('old','10010','old body','now','accepted','')")
+            self.assertEqual(sms_store.rows(store,'sent')[0]['message'],'old body')
+            sms_store.archive(store,['old'],kind='sent')
+            self.assertEqual(sms_store.rows(store,'sent'),[])
+            sms_store.archive(store,['old'],restore=True,kind='sent')
+            self.assertEqual(sms_store.rows(store,'sent')[0]['state'],'accepted')
