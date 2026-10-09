@@ -4,7 +4,7 @@ USB 蜂窝上网、短信管理与邮件转发的 GL.iNet / OpenWrt LuCI 插件�
 
 **采用 MIT 协议，完整项目源码开放。可免费使用、复制、修改、再分发及商业使用，须保留版权和许可证声明。** 查看 [LICENSE](LICENSE)。本项目没有订阅、授权码或遥测；第三方依赖与模块核心固件的许可独立于本项目，见 [第三方说明](THIRD_PARTY.md)。
 
-产品名称 **V1.3**，OpenWrt 软件包版本 **1.3.0**，软件包名 `luci-app-air780e`。
+产品名称 **V1.3**，OpenWrt 软件包版本 **1.3.1**，软件包名 `luci-app-air780e`。
 
 ## 已支持的设备
 
@@ -25,13 +25,13 @@ USB 蜂窝上网、短信管理与邮件转发的 GL.iNet / OpenWrt LuCI 插件�
 推荐先下载并阅读脚本，再执行：
 
 ```sh
-curl -fL https://github.com/aileventkaya-netizen/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
+curl -fL https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
 sh /tmp/install-air780e.sh
 ```
 
 脚本核验软件源公钥指纹和索引签名，保留官方软件源，更新列表并安装插件。公钥指纹：`af5c2a6ce4ab8132`。仅配置源而不安装：`sh /tmp/install-air780e.sh --feed-only`。
 
-也可从 [Releases](https://github.com/aileventkaya-netizen/Air780E-Modem-for-Router/releases) 下载 IPK，在 LuCI 软件包页的「上传软件包」安装。依赖需要从路由器自己的固件源获取；不要强制安装其他内核版本的 USB 驱动，也不要批量升级厂商预装软件。
+也可从 [Releases](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases) 下载 IPK，在 LuCI 软件包页的「上传软件包」安装。依赖需要从路由器自己的固件源获取；不要强制安装其他内核版本的 USB 驱动，也不要批量升级厂商预装软件。
 
 安装后在 LuCI「服务 → Air780E Modem」打开。GL 管理网页与 LuCI 可能使用不同端口；开发机 LuCI 使用 8080。插入模块、点击「启动上网」，等待 DHCP 完成，再点击「验证 4G 出口」。
 
@@ -70,6 +70,6 @@ PYTHONPATH=files/usr/lib/air780e python3 -m unittest discover -s tests -v
 python3 scripts/build.py
 ```
 
-发布流程与软件源签名见 [发布说明](docs/RELEASING.md)。版本变化见 [CHANGELOG](CHANGELOG.md)。反馈请提交 [Issue](https://github.com/aileventkaya-netizen/Air780E-Modem-for-Router/issues)，包含路由器型号、固件版本、模块型号及脱敏诊断；不要上传号码、短信、密码、数据库或签名私钥。
+发布流程与软件源签名见 [发布说明](docs/RELEASING.md)。版本变化见 [CHANGELOG](CHANGELOG.md)。反馈请提交 [Issue](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/issues)，包含路由器型号、固件版本、模块型号及脱敏诊断；不要上传号码、短信、密码、数据库或签名私钥。
 
 独立社区项目，非 GL.iNet 或合宙官方产品。点击网络 · [www.DJ.cn](https://www.DJ.cn) · 蔡立文 · cailiwen@dj.cn。

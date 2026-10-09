@@ -23,7 +23,7 @@ import signal_level
 import sms_store
 from serial_transport import ATSerial
 
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 APP = 'AIR780E_DEMO'
 STORE = Path(os.environ.get('AIR780E_DATA_DIR', '/etc/air780e'))
 RUNTIME = Path(os.environ.get('AIR780E_RUN_DIR', '/var/run/air780e'))
