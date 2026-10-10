@@ -2,12 +2,18 @@
 
 [简体中文](CHANGELOG.md) | **English**
 
-## V1.3 / 1.3.3
+## V1.3 / 1.3.3 (2026-10-09)
+
+Adds multilingual UI and bilingual documentation on top of 1.3.2; existing SMS deletion, restoration and network functions remain available.
 
 - Add Stock code: 832571 immediately after DJ Networking in the footer and About information.
 - Add Simplified Chinese, English and Traditional Chinese UI; default to Simplified Chinese and remember explicit browser choices.
 - Translate interface text, statuses, confirmations and service messages while preserving SMS bodies, form input and protocol confirmation tokens.
 - Provide English README, network policy, troubleshooting, release maintenance, third-party notices and changelog; add English descriptions to existing GitHub Releases.
+
+- Validation: 33 automated tests passed. GL-MT3000 LuCI checks cover all three languages, email and firmware prompts, and preservation of drafts, message bodies and selections.
+- Upgrade: with this feed configured, update LuCI System → Software lists and upgrade `luci-app-air780e` to 1.3.3. Existing SMS history and settings are retained.
+- Compatibility: verified GL-MT3000 / GL4.11.0 / Air780EHV_A11 companion firmware; other models require separate verification.
 
 ## V1.3 / 1.3.2
 
