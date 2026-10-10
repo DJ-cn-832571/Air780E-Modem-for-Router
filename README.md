@@ -5,7 +5,7 @@ USB 蜂窝上网、短信管理与邮件转发的 GL.iNet / OpenWrt LuCI 插件�
 
 **采用 MIT 协议，完整项目源码开放。可免费使用、复制、修改、再分发及商业使用，须保留版权和许可证声明。** 查看 [LICENSE](LICENSE)。本项目没有订阅、授权码或遥测；第三方依赖与模块核心固件的许可独立于本项目，见 [第三方说明](THIRD_PARTY.md)。
 
-产品名称 **V1.3**，OpenWrt 软件包版本 **1.3.3**，软件包名 `luci-app-air780e`。
+产品名称 **V1.3**，OpenWrt 软件包版本 **1.3.4**，软件包名 `luci-app-air780e`。
 
 ## 已支持的设备
 
@@ -26,17 +26,22 @@ USB 蜂窝上网、短信管理与邮件转发的 GL.iNet / OpenWrt LuCI 插件�
 推荐先下载并阅读脚本，再执行：
 
 ```sh
-curl -4 --retry 3 -fL https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
+curl -4 --retry 3 -fL https://github.com/832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
 sh /tmp/install-air780e.sh
 ```
 
 脚本核验软件源公钥指纹和索引签名，保留官方软件源，更新列表并安装插件。公钥指纹：`af5c2a6ce4ab8132`。仅配置源而不安装：`sh /tmp/install-air780e.sh --feed-only`。
 
-也可从 [Releases](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases) 下载 IPK，在 LuCI 软件包页的「上传软件包」安装。依赖需要从路由器自己的固件源获取；不要强制安装其他内核版本的 USB 驱动，也不要批量升级厂商预装软件。
+也可从 [Releases](https://github.com/832571/Air780E-Modem-for-Router/releases) 下载 IPK，在 LuCI 软件包页的「上传软件包」安装。依赖需要从路由器自己的固件源获取；不要强制安装其他内核版本的 USB 驱动，也不要批量升级厂商预装软件。
 
 安装后在 LuCI「服务 → Air780E Modem」打开。GL 管理网页与 LuCI 可能使用不同端口；开发机 LuCI 使用 8080。插入模块、点击「启动上网」，等待 DHCP 完成，再点击「验证 4G 出口」。
 
 ## 功能
+
+- 每 30 秒检测绑定 Air780E 的 SIM 蜂窝外网连接，显示状态和上次检测时间；支持两个独立 HTTPS 测试端点。
+- 每 9 秒采样并显示 USB 网卡上传／下载字节、数据包数和速率；网卡累计值可能在重连后重置，包含测试及隧道流量，不代表运营商账单。
+- 首次联网检测失败时重启一次 4G 并复测，仍失败则切换 WAN；回退后继续检测，不反复重启。点击启动上网恢复 4G 优先。手动停止会暂停自动恢复，关闭网页不停止后台检测。
+- 检测与短信、固件任务共用串行队列，不并发控制 USB；任务忙碌、重启及超时时检测可能顺延。
 
 - 简体中文、English、繁體中文三种界面语言；首次默认简体中文，可记住浏览器内的选择，不翻译短信正文或改动输入。
 
@@ -66,13 +71,13 @@ VPN 默认出口、策略路由、IPv6 和 GL kmwan 可能覆盖普通默认路�
 
 ## 验收、源码与反馈
 
-已验证实际核心及脚本烧录、USB 重连、三轮启停、WAN 回退、绑定 4G HTTPS 和真实 LAN 客户端 HTTP 200。33 项回归测试通过。其他型号、完整断电重启和长时间压力测试仍需验证。
+已验证实际核心及脚本烧录、USB 重连、三轮启停、WAN 回退、绑定 4G HTTPS 和真实 LAN 客户端 HTTP 200。41 项回归测试通过。其他型号、完整断电重启和长时间压力测试仍需验证。
 
 ```sh
 PYTHONPATH=files/usr/lib/air780e python3 -m unittest discover -s tests -v
 python3 scripts/build.py
 ```
 
-发布流程与软件源签名见 [发布说明](docs/RELEASING.md)。版本变化见 [CHANGELOG](CHANGELOG.md)。反馈请提交 [Issue](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/issues)，包含路由器型号、固件版本、模块型号及脱敏诊断；不要上传号码、短信、密码、数据库或签名私钥。
+发布流程与软件源签名见 [发布说明](docs/RELEASING.md)。版本变化见 [CHANGELOG](CHANGELOG.md)。反馈请提交 [Issue](https://github.com/832571/Air780E-Modem-for-Router/issues)，包含路由器型号、固件版本、模块型号及脱敏诊断；不要上传号码、短信、密码、数据库或签名私钥。
 
 独立社区项目，非 GL.iNet 或合宙官方产品。点击网络 · **股票代码：832571** · [www.DJ.cn](https://www.DJ.cn) · 蔡立文 · cailiwen@dj.cn。

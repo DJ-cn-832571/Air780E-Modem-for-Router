@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-base='https://raw.githubusercontent.com/DJ-cn-832571/Air780E-Modem-for-Router/codex/release-v1.3/feed'
+base='https://raw.githubusercontent.com/832571/Air780E-Modem-for-Router/codex/release-v1.3/feed'
 fingerprint='af5c2a6ce4ab8132'
 [ "$(id -u)" = 0 ] || { echo '请使用路由器 root 执行'; exit 1; }
 case "${1:-}" in ''|--feed-only) ;; *) echo '用法：install-feed.sh [--feed-only]'; exit 1;; esac

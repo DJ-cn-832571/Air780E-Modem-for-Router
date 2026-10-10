@@ -2,6 +2,15 @@
 
 [简体中文](CHANGELOG.md) | **English**
 
+## V1.3 / 1.3.4 (2026-10-10)
+
+- Add 30-second cellular Internet checks bound to Air780E, with status, timestamps and failure details.
+- Add 9-second upload/download bytes, packet counts and rate displays.
+- Restart once on failure and retest; fall back to WAN if it still fails. Continue checking without repeated restarts in fallback.
+- Manual Stop pauses recovery; manual Start restores 4G priority. Persist policy across service restarts.
+- Serialize checks with device operations and use two HTTPS endpoints to reduce false failures. Monitoring runs independently of the browser.
+- Pass 41 automated tests and verify the three-language panel and GL-MT3000 live workflow.
+
 ## V1.3 / 1.3.3 (2026-10-09)
 
 Adds multilingual UI and bilingual documentation on top of 1.3.2; existing SMS deletion, restoration and network functions remain available.

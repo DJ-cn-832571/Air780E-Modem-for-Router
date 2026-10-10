@@ -6,7 +6,7 @@ A GL.iNet / OpenWrt LuCI plugin for USB cellular Internet, SMS management and em
 
 **Fully open source under the MIT license. Free to use, copy, modify, redistribute and use commercially, provided the copyright and license notices are retained.** See [LICENSE](LICENSE). No subscriptions, activation keys or telemetry. Third-party dependencies and module core firmware have separate licenses; see [Third-party components](THIRD_PARTY.en.md).
 
-Product name: **V1.3**. OpenWrt package version: **1.3.3**. Package: `luci-app-air780e`.
+Product name: **V1.3**. OpenWrt package version: **1.3.4**. Package: `luci-app-air780e`.
 
 ## Verified hardware
 
@@ -27,17 +27,22 @@ Configure the third-party feed once, then update lists under LuCI **System → S
 Download and review the script before running it:
 
 ```sh
-curl -4 --retry 3 -fL https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
+curl -4 --retry 3 -fL https://github.com/832571/Air780E-Modem-for-Router/releases/latest/download/install-feed.sh -o /tmp/install-air780e.sh
 sh /tmp/install-air780e.sh
 ```
 
 The script checks the feed public-key fingerprint and signed index, preserves official feeds, updates lists and installs the plugin. Public-key fingerprint: `af5c2a6ce4ab8132`. To configure only the feed: `sh /tmp/install-air780e.sh --feed-only`.
 
-Alternatively, download the IPK from [Releases](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/releases) and use **Upload Package** in LuCI. Dependencies must come from your router's firmware feed. Do not force-install USB drivers for another kernel or bulk-upgrade vendor packages.
+Alternatively, download the IPK from [Releases](https://github.com/832571/Air780E-Modem-for-Router/releases) and use **Upload Package** in LuCI. Dependencies must come from your router's firmware feed. Do not force-install USB drivers for another kernel or bulk-upgrade vendor packages.
 
 Open **Services → Air780E Modem**. GL's management page and LuCI may use different ports; the development router uses port 8080 for LuCI. Connect the module, click **Start Internet**, wait for DHCP, then click **Verify 4G connection**.
 
 ## Features and languages
+
+- Check SIM cellular Internet through the Air780E interface every 30 seconds, showing state and last check time; use two independent HTTPS endpoints.
+- Sample and display USB upload/download bytes, packets and rates every 9 seconds. Cumulative counters may reset on reconnection, include probes/tunnel traffic, and do not represent carrier billing.
+- On failed connectivity, restart 4G once and retest; if it still fails, use WAN. Continue checking in fallback without repeated restarts. Click Start Internet to restore 4G priority. Manual Stop pauses automatic recovery; closing the page does not stop monitoring.
+- Checks share a serialized queue with SMS and firmware tasks to prevent concurrent USB control. Busy tasks, restart and timeout handling can defer checks.
 
 - Simplified Chinese, English and Traditional Chinese UI. Simplified Chinese is the initial default; the browser remembers explicit language choices. Switching languages preserves SMS content and form input.
 - USB ECM start/stop, hotplug reconnection, DHCP wait and independent 4G DNS/HTTPS verification.
@@ -73,6 +78,6 @@ PYTHONPATH=files/usr/lib/air780e python3 -m unittest discover -s tests -v
 python3 scripts/build.py
 ```
 
-See [Release maintenance](docs/RELEASING.en.md) and [Changelog](CHANGELOG.en.md). Report [Issues](https://github.com/DJ-cn-832571/Air780E-Modem-for-Router/issues) with router model, firmware version, module model and redacted diagnostics. Do not upload numbers, SMS, passwords, databases or signing keys.
+See [Release maintenance](docs/RELEASING.en.md) and [Changelog](CHANGELOG.en.md). Report [Issues](https://github.com/832571/Air780E-Modem-for-Router/issues) with router model, firmware version, module model and redacted diagnostics. Do not upload numbers, SMS, passwords, databases or signing keys.
 
 Independent community project; not an official GL.iNet or AirM2M product. DJ Networking · **Stock code: 832571** · [www.DJ.cn](https://www.DJ.cn) · Cai Liwen · cailiwen@dj.cn.
